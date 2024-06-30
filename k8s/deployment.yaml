@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goserver-test
+  labels:
+    app: goserver-test
+spec:
+  selector:
+    matchLabels:
+      app: goserver
+  replicas: 2
+  template:
+    metadata:
+      name: "goserver"
+      labels:
+        app: "goserver"
+    spec:
+      containers:
+        - name: goserver
+          image: "taisso/hello-go:v3.1"
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: goserver-env
+            - secretRef:
+                name: goserver-secret
+          # env:
+            # - name: NAME
+            #   value: "Luiz"
+            # - name: AGE
+            #   value: "30"
+
+            # - name: NAME
+            #   valueFrom:
+            #     configMapKeyRef:
+            #       name: goserver-env
+            #       key: NAME
+
+            # - name: AGE
+            #   valueFrom:
+            #     configMapKeyRef:
+            #       name: goserver-env
+            #       key: AGE
+          volumeMounts:
+            - mountPath: "/go/myfamily"
+              name: config
+            # readOnly: true
+          
+      volumes:
+        - name: config
+          configMap:
+            name: configmap-family
+            items:
+              - key: members
+                path: "family.txt" 
