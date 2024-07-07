@@ -17,8 +17,18 @@ spec:
     spec:
       containers:
         - name: goserver
-          image: "taisso/hello-go:v3.1"
+          image: "taisso/hello-go:v4"
           imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 3
+            timeoutSeconds: 1
+            successThreshold: 1
+
+
           envFrom:
             - configMapRef:
                 name: goserver-env

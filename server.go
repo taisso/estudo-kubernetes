@@ -5,14 +5,14 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
-type Response struct {
-	Message string `json:"message"`
-}
+var startedAt = time.Now()
 
 func main() {
 
+	http.HandleFunc("/healthz", Healthz)
 	http.HandleFunc("/config-map", ConfigMap)
 	http.HandleFunc("/secret", Secret)
 
@@ -40,4 +40,17 @@ func Secret(w http.ResponseWriter, r *http.Request) {
 	password := os.Getenv("PASSWORD")
 
 	fmt.Fprintf(w, "User: %s. Password: %s", user, password)
+}
+
+func Healthz(w http.ResponseWriter, r *http.Request) {
+	duration := time.Since(startedAt)
+
+	if duration.Seconds() > 25 {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(fmt.Sprintf("Duration: %v", duration.Seconds())))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("OK"))
 }
