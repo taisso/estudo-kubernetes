@@ -8,7 +8,7 @@ spec:
   selector:
     matchLabels:
       app: goserver
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       name: "goserver"
@@ -17,8 +17,20 @@ spec:
     spec:
       containers:
         - name: goserver
-          image: "taisso/hello-go:v4"
+          image: "taisso/hello-go:v5"
           imagePullPolicy: Always
+
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            periodSeconds: 3
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            # timeoutSeconds: 1
+            # successThreshold: 1
+
+          
           livenessProbe:
             httpGet:
               path: /healthz
@@ -27,6 +39,7 @@ spec:
             failureThreshold: 3
             timeoutSeconds: 1
             successThreshold: 1
+            initialDelaySeconds: 20
 
 
           envFrom:
