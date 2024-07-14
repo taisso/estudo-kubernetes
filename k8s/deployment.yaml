@@ -17,8 +17,25 @@ spec:
     spec:
       containers:
         - name: goserver
-          image: "taisso/hello-go:v5"
+          image: "taisso/hello-go:v5.2"
           imagePullPolicy: Always
+
+          resources:
+            requests:
+              cpu: "0.05"
+              memory: 20Mi
+            limits:
+              cpu: "0.05"
+              memory: 25Mi
+
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            periodSeconds: 3
+            failureThreshold: 30
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
 
           readinessProbe:
             httpGet:
@@ -26,10 +43,9 @@ spec:
               port: 8080
             periodSeconds: 3
             failureThreshold: 3
-            initialDelaySeconds: 10
-            # timeoutSeconds: 1
-            # successThreshold: 1
-
+            # initialDelaySeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
           
           livenessProbe:
             httpGet:
@@ -39,7 +55,7 @@ spec:
             failureThreshold: 3
             timeoutSeconds: 1
             successThreshold: 1
-            initialDelaySeconds: 20
+            # initialDelaySeconds: 20
 
 
           envFrom:
