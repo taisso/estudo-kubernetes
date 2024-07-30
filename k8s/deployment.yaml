@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: goserver
-          image: "taisso/hello-go:v5.2"
+          image: "taisso/hello-go:v5.3"
           imagePullPolicy: Always
 
           resources:
