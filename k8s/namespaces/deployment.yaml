@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  labels:
+    app: server
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app: "server"
+  template:
+    metadata:
+      labels:
+        app: "server"
+    spec:
+      serviceAccountName: server
+      # serviceAccount: server
+      # automountServiceAccountToken: false
+      containers:
+      - name: server
+        image: "taisso/hello-go:v2"
+        # imagePullPolicy: Always
+        # ports:
+        # - containerPort: 8080
